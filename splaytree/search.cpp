@@ -1,4 +1,4 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 class SplayTree {
@@ -39,60 +39,55 @@ public:
     SplayTree() {
         root = nullptr;
     }
+
     ~SplayTree() {
         // Ignore deleting all nodes in the tree
     }
+
     void printBinaryTree() {
         printBinaryTree("", root, false, false);
     }
+
     void printPreorder() {
         printPreorder(root);
         cout << "\n";
     }
+
     void splay(Node* p);
+
     void insert(int val);
-    bool search(int val);
-    Node* remove(int val) {
+
+    bool search(int val) {
         // To Do
     }
+    bool searchRec(int val, Node*& node, Node*& parent);
 };
 
-
 // Write your helper functions here
+bool SplayTree::searchRec(int val, SplayTree::Node *&node, SplayTree::Node *&parent)
+{
+    if (!node)
+    {
+        if (parent)
+        splay(parent);
+        return false;
+    }
+    
+    if (val < node->val)
+    return searchRec(val, node->pLeft, node);
+    
+    if (val > node->val)
+    return searchRec(val, node->pRight, node);
+    
+    splay(node);
+    return true;
+}
 
-inline SplayTree::Node* SplayTree::remove(int val)
+bool SplayTree::search(int val)
 {
     //TODO
     if (!root)
-    return nullptr;
-    search(val);
+    return false;
     
-    if (root->val == val)
-    {
-        if (!root->pLeft)
-        {
-            Node* tmp = root;
-            root = root->pRight;
-            
-            if (root)
-            root->pParent = nullptr;
-            return tmp;
-        }
-        
-        Node* treeLeft = root->pLeft;
-        Node* treeRight = root->pRight;
-        treeLeft->pParent = nullptr;
-        root->pLeft = root->pRight = nullptr;
-        Node* ans = root;
-        
-        while (treeLeft->pRight)
-        treeLeft = treeLeft->pRight;
-        splay(treeLeft);
-        treeLeft->pRight = treeRight;
-        
-        if (treeRight)
-        treeRight->pParent = treeLeft;
-        return ans;
-    }
-    return nullptr;
+    return searchRec(val, root, root->pParent);
 }
